@@ -1,0 +1,24 @@
+ingress:
+  certificateArn: "arn:aws:acm:ap-southeast-1:022499043310:certificate/647360bb-b2ea-4ec5-9551-2da20236dd16"
+  subnets: "subnet-00502d28cf8623a99,subnet-00f29dc65958e83c4,subnet-0b4dd832c80661a42"
+  listenPorts: '[{"HTTP": 80}, {"HTTPS":443}]'
+  groupName: "cart-service"
+  actionsSslRedirect: '{"Type": "redirect", "RedirectConfig": {"Protocol": "HTTPS", "Port": "443", "Host": "#{host}", "Path": "/#{path}", "Query": "#{query}", "StatusCode": "HTTP_301"}}' 
+
+# ConfigMap override for production environment
+configmap:
+  data:
+    application.properties: |
+      spring.application.name=cart-service
+      server.port=5863
+
+      eureka.instance.hostname=cart-service
+      eureka.instance.instance-id=${spring.application.name}
+      eureka.client.service-url.defaultZone=http://shopnow-discovery-server-service:8761/eureka/
+
+      spring.datasource.url=jdbc:postgresql://postgres:5432/postgres?useSSL=false
+      spring.datasource.username=postgres
+      spring.datasource.password=admin
+      spring.jpa.hibernate.ddl-auto=update
+      spring.jpa.show-sql=true
+      spring.jpa.properties.hibernate.format-sql=true

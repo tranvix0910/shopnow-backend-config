@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: shopnow-database-services
+  namespace: shopnow
+
+resources:
+  - shopnow-database-config/kustomize/patches/keycloak-realm-configmap.yaml
+  - shopnow-database-config/kustomize/patches/shopnow-keycloak-mysql.yaml
+  - shopnow-database-config/kustomize/patches/shopnow-keycloak-realms.yaml
+  - shopnow-database-config/kustomize/patches/shopnow-postgresql.yaml
+  - shopnow-database-config/kustomize/patches/storage-patch.yaml
+
+namespace: shopnow
+
+images:
+  - name: mysql
+    newTag: "8.0"
+  - name: quay.io/keycloak/keycloak
+    newTag: "23.0.3"
+  - name: postgres
+    newTag: "15"
+
+sortOptions:
+  order: fifo

@@ -1,0 +1,48 @@
+# Global settings
+global:
+  appName: "shopnow-product-service"       
+  namespace: "shopnow"        
+  enabledComponents:
+    configmap: true          
+    service: true            
+    ingress: true             
+
+# Deployment
+image:
+  repository: ""
+  tag: "v1"
+  pullPolicy: Always
+
+replicaCount: 1
+rollingUpdate:
+  maxSurge: 25%
+  maxUnavailable: 25%
+
+service:
+  type: ClusterIP
+  port: 5861
+  targetPort: 5861
+
+ingress:
+  className: "alb"
+  host: "product-service-shopnow.tranvix.click"
+  path: "/"
+  pathType: Prefix
+  certificateArn: ""
+  subnets: ""
+  listenPorts: ""
+  groupName: ""
+  actionsSslRedirect: ""
+
+configmap:
+  data: {}
+
+serviceAccount:
+  create: false
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80

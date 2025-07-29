@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shopnow-user-service
+  namespace: argocd
+spec:
+  destination:
+    namespace: shopnow
+    server: https://kubernetes.default.svc
+  source:
+    path: user-service/shopnow-user-service-chart
+    repoURL: https://github.com/tranvix0910/shopnow-backend.git
+    targetRevision: main
+    helm:
+      valueFiles:
+        - values.yaml
+        - ../shopnow-user-service-config/overlays/production/values.yaml
+      values: |
+        image:
+          repository: "022499043310.dkr.ecr.ap-southeast-1.amazonaws.com/shopnow/shopnow-user-service"
+  project: shopnow
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
