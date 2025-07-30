@@ -6,11 +6,11 @@ metadata:
   namespace: shopnow
 
 resources:
-  - shopnow-database-config/kustomize/patches/keycloak-realm-configmap.yaml
-  - shopnow-database-config/kustomize/patches/shopnow-keycloak-mysql.yaml
-  - shopnow-database-config/kustomize/patches/shopnow-keycloak-realms.yaml
-  - shopnow-database-config/kustomize/patches/shopnow-postgresql.yaml
-  - shopnow-database-config/kustomize/patches/storage-patch.yaml
+  - kustomize/patches/keycloak-realm-configmap.yaml
+  - kustomize/patches/shopnow-keycloak-mysql.yaml
+  - kustomize/patches/shopnow-keycloak-realms.yaml
+  - kustomize/patches/shopnow-postgresql.yaml
+  - kustomize/patches/storage-patch.yaml
 
 namespace: shopnow
 
