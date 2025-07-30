@@ -24,7 +24,7 @@ spec:
             - "--import-realm"
             - "--hostname=keycloak-shopnow.tranvix.click"
             - "--hostname-strict=false"
-            - "--http-relative-path=/auth"
+            - "--http-relative-path=/"
             - "--proxy=edge"
           env:
             - name: DB_VENDOR
