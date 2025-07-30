@@ -1,0 +1,40 @@
+# Global settings
+global:
+  appName: "shopnow-config-server"
+  namespace: "shopnow"
+  enabledComponents:
+    configmap: true
+    service: true
+    ingress: false
+
+# Deployment
+image:
+  repository: ""
+  tag: "v1"
+  pullPolicy: Always
+
+replicaCount: 1
+revisionHistoryLimit: 11
+rollingUpdate:
+  maxSurge: 25%
+  maxUnavailable: 25%
+
+# Service
+service:
+  type: ClusterIP
+  port: 5865
+  targetPort: 5865
+
+# ConfigMap
+configmap:  
+  data: {}
+
+serviceAccount:
+  create: false
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
