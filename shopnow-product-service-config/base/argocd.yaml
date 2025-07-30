@@ -8,7 +8,7 @@ spec:
     namespace: shopnow
     server: https://kubernetes.default.svc
   source:
-    path: product-service/shopnow-product-service-chart
+    path: shopnow-product-service-chart
     repoURL: https://github.com/tranvix0910/shopnow-backend.git
     targetRevision: main
     helm:
