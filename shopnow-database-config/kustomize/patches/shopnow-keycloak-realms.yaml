@@ -20,8 +20,12 @@ spec:
           image: quay.io/keycloak/keycloak:23.0.3
           command:
             - "/opt/keycloak/bin/kc.sh"
-            - "start-dev"
+            - "start"
             - "--import-realm"
+            - "--hostname=keycloak-shopnow.tranvix.click"
+            - "--hostname-strict=false"
+            - "--http-relative-path=/auth"
+            - "--proxy=edge"
           env:
             - name: DB_VENDOR
               value: MYSQL
