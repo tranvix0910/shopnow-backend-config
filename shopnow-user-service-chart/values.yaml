@@ -10,7 +10,7 @@ global:
 # Deployment
 image:
   repository: ""
-  tag: "v1"
+  tag: "v1.0.0_b873ba3"
   pullPolicy: Always
 
 replicaCount: 1
