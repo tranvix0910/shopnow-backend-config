@@ -8,37 +8,72 @@ global:
     ingress: true
 
 # Deployment
+#
+# repository is intentionally empty: the Argo CD Application supplies it, so the
+# account id lives in exactly one place. See shopnow-user-service-config/base.
 image:
   repository: ""
-  tag: "v1.0.0_b873ba3"
+  tag: "v1"
   pullPolicy: Always
 
-replicaCount: 1
-revisionHistoryLimit: 11
+# 2, not 1. Below 2 the PodDisruptionBudget is skipped and a single spot
+# interruption takes the whole service down.
+replicaCount: 2
+revisionHistoryLimit: 10
 rollingUpdate:
   maxSurge: 25%
   maxUnavailable: 25%
 
-# Service
+# Scheduling. Sends pods to node pool 2 (ms-od / ms-spot), which carries both
+# the label and the matching taint - see gitops/platform/nodepools.
+nodeSelector:
+  workload: microservices
+tolerations:
+  - key: workload
+    operator: Equal
+    value: microservices
+    effect: NoSchedule
+
+terminationGracePeriodSeconds: 60
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    memory: 512Mi
+
+podDisruptionBudget:
+  enabled: true
+  maxUnavailable: 1
+
+# Users live in Postgres and tokens come from Keycloak. Nothing on disk.
+persistence:
+  enabled: false
+  storageClass: efs-sc
+  size: 5Gi
+  mountPath: /data
+
 service:
   type: ClusterIP
   port: 5865
   targetPort: 5865
 
-# Ingress
+# Ingress joins the shared eks-workload ALB on its own listener port.
+#   http://<alb-dns>:5865
 ingress:
   className: "alb"
-  host: "user-service-shopnow.tranvix.click"
+  host: ""
   path: "/"
   pathType: Prefix
-  certificateArn: ""
-  subnets: ""
-  listenPorts: ""
-  groupName: ""
-  actionsSslRedirect: ""
+  groupName: "eks-workload"
+  groupOrder: 80
+  listenPorts: '[{"HTTP": 5865}]'
+  inboundCidrs: "103.199.54.109/32"
+  healthcheckPath: "/"
+  successCodes: "200-404"
 
-# ConfigMap
-configmap:  
+configmap:
   data: {}
 
 serviceAccount:
@@ -46,7 +81,7 @@ serviceAccount:
 
 autoscaling:
   enabled: false
-  minReplicas: 1
-  maxReplicas: 3
+  minReplicas: 2
+  maxReplicas: 4
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80

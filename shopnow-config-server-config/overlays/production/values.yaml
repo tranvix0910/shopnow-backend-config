@@ -1,10 +1,13 @@
+# Production overlay. No ingress block - this service is internal only.
 configmap:
   data:
     application.properties: |
       spring.application.name=config-server
       server.port=5859
       spring.profiles.active=native
+
       eureka.instance.hostname=config-server
       eureka.instance.instance-id=${spring.application.name}
       eureka.client.service-url.defaultZone=http://shopnow-discovery-server-service:8761/eureka/
+
       spring.cloud.config.server.bootstrap=true

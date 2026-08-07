@@ -1,14 +1,19 @@
-ingress:
-  certificateArn: "arn:aws:acm:ap-southeast-1:022499043310:certificate/506d551a-b534-4f5b-af8f-5e8cedfe0e0b"
-  subnets: "subnet-0b78796b583490b19, subnet-0e57056ac64de1902, subnet-0501cacaf96e89a09"
-  listenPorts: '[{"HTTP": 80}, {"HTTPS":443}]'
-  groupName: "shopnow"
-  actionsSslRedirect: '{"Type": "redirect", "RedirectConfig": {"Protocol": "HTTPS", "Port": "443", "Host": "#{host}", "Path": "/#{path}", "Query": "#{query}", "StatusCode": "HTTP_301"}}' 
-
-# ConfigMap override for production environment
+# Production overlay.
+#
+# The ingress block that used to live here is gone: the ACM certificate belonged
+# to account 022499043310 and the domain *.tranvix.click is not ours, and the
+# three hardcoded subnet ids were from a different VPC. Listener ports now live
+# in the chart's values.yaml, one per service on the shared eks-workload ALB.
 configmap:
   data:
     application.properties: |
+      # Switches off the baked-in `localhost` profile, whose profile-activated
+      # document points eureka at http://discovery-server:8761 - a Service that
+      # does not exist here; it is shopnow-discovery-server-service. Naming a
+      # profile nothing activates on removes the competing value rather than
+      # relying on override precedence against a profile-specific document.
+      spring.profiles.active=production
+
       # Application configuration
       spring.application.name=user-service
       server.port=5865
@@ -25,7 +30,12 @@ configmap:
       spring.jpa.show-sql=true
       spring.jpa.properties.hibernate.format-sql=true
 
-      # JWT configuration
+      # JWT configuration.
+      #
+      # The client secret is in plain text in git. It is the demo realm's secret,
+      # imported from keycloak-realms/realm-export.json, so it is already public
+      # in this repository - but this is exactly the value that should come from
+      # External Secrets and Secrets Manager before anything real runs here.
       jwt.issuer_uri=http://shopnow-keycloak-realms-service:8080/realms/java-microservice-realm/protocol/openid-connect/token
       jwt.client_id=spring-cloud-client
       jwt.client_secret=AJufwN1eof8P5Gga5Y9atCFqdMuZEuKd
