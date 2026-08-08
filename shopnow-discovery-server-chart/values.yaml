@@ -79,7 +79,10 @@ ingress:
   groupName: "eks-workload"
   groupOrder: 50
   listenPorts: '[{"HTTP": 8761}]'
-  inboundCidrs: "103.199.54.109/32"
+  # 0.0.0.0/0 - lab tradeoff, see gitops/platform/ingress/admin-ingress.yaml.
+  # This was a stale single-IP allowlist that no longer matched anyone's IP,
+  # making the service unreachable to the one person running this lab.
+  inboundCidrs: "0.0.0.0/0"
   # Eureka does serve its dashboard at /, so this one is a real 200.
   healthcheckPath: "/"
   successCodes: "200"
