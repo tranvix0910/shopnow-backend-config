@@ -158,8 +158,12 @@ spec:
 #   group.name shopnow - would have built a second ALB. eks-workload is the group
 #     the admin tools already use.
 #
-# The admin console has a real password but it is admin/admin, so the CIDR
-# allowlist is doing the actual work here.
+# The admin console has a real password, but it is admin/admin - trivial to
+# guess. inbound-cidrs is 0.0.0.0/0 (same lab tradeoff as every other Ingress
+# in this group, see gitops/platform/ingress/admin-ingress.yaml), which means
+# that weak default is now the ONLY thing standing between this console and
+# the internet. Change KEYCLOAK_ADMIN_PASSWORD before this is ever anything
+# but a lab, and narrow this back down first if that isn't done yet.
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -171,7 +175,9 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 8080}]'
-    alb.ingress.kubernetes.io/inbound-cidrs: 103.199.54.109/32
+    # 0.0.0.0/0 - lab tradeoff, see gitops/platform/ingress/admin-ingress.yaml.
+    # This was a stale single-IP allowlist that no longer matched anyone's IP.
+    alb.ingress.kubernetes.io/inbound-cidrs: 0.0.0.0/0
     alb.ingress.kubernetes.io/healthcheck-path: /health/ready
 spec:
   ingressClassName: alb
