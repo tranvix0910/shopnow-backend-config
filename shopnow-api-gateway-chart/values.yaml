@@ -9,7 +9,7 @@ global:
 
 image:
   repository: ""
-  tag: "v1.0.0_19f49a0"
+  tag: "v1.0.0_2eb79ba"
   pullPolicy: Always
 
 replicaCount: 1
