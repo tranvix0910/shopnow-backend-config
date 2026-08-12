@@ -40,7 +40,12 @@ configmap:
       spring.application.name=product-service
       server.port=5861
 
-      eureka.instance.hostname=product-service
+      # Bare "product-service" doesn't resolve - the real K8s Service is
+      # shopnow-product-service-service. This was invisible until something
+      # actually tried to connect to the address Eureka hands out (the new
+      # api-gateway's lb:// resolution) - registration/heartbeat both worked
+      # fine either way.
+      eureka.instance.hostname=shopnow-product-service-service
       eureka.instance.instance-id=${spring.application.name}
       eureka.client.service-url.defaultZone=http://shopnow-discovery-server-service:8761/eureka/
 

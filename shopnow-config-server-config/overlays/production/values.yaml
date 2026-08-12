@@ -6,7 +6,11 @@ configmap:
       server.port=5859
       spring.profiles.active=native
 
-      eureka.instance.hostname=config-server
+      # Bare "config-server" doesn't resolve - the real K8s Service is
+      # shopnow-config-server-service. Not on the api-gateway's route table
+      # today, but the same class of bug as shopnow-product-service-config -
+      # fixed for consistency before something else trips over it via lb://.
+      eureka.instance.hostname=shopnow-config-server-service
       eureka.instance.instance-id=${spring.application.name}
       eureka.client.service-url.defaultZone=http://shopnow-discovery-server-service:8761/eureka/
 

@@ -17,7 +17,12 @@ configmap:
       spring.application.name=cart-service
       server.port=5863
 
-      eureka.instance.hostname=cart-service
+      # Bare "cart-service" doesn't resolve - and note the real K8s Service is
+      # shopnow-shopping-cart-service-service, not shopnow-cart-service-service
+      # (the chart's appName is shopnow-shopping-cart-service, spring.application.name
+      # is the shorter cart-service - two different names for the same thing).
+      # See shopnow-product-service-config for why this was invisible until now.
+      eureka.instance.hostname=shopnow-shopping-cart-service-service
       eureka.instance.instance-id=${spring.application.name}
       eureka.client.service-url.defaultZone=http://shopnow-discovery-server-service:8761/eureka/
 
